@@ -114,7 +114,7 @@ device 1: AMD Radeon RX 9070 XT
 
     for i in range(torch.cuda.device_count()):
 
-    print(f"Device {i}:", torch.cuda.get_device_name(i))
+        print(f"Device {i}:", torch.cuda.get_device_name(i))
 
 ⭐ 5. Run Your First LLM on AMD GPU
 
@@ -131,12 +131,12 @@ device 1: AMD Radeon RX 9070 XT
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
     model = AutoModelForCausalLM.from_pretrained(
-
-    MODEL_ID,
     
-    torch_dtype=dtype,
+        MODEL_ID,
     
-    device_map={"": device},
+        torch_dtype=dtype,
+    
+        device_map={"": device},
     
     )
 
@@ -146,17 +146,17 @@ device 1: AMD Radeon RX 9070 XT
 
     with torch.no_grad():
 
-    outputs = model.generate(
-    
-        **inputs,
+        outputs = model.generate(
         
-        max_new_tokens=100,
-        
-        temperature=0.8,
-        
-        top_p=0.95,
-        
-        do_sample=True
+            **inputs,
+            
+            max_new_tokens=100,
+            
+            temperature=0.8,
+            
+            top_p=0.95,
+            
+            do_sample=True
         
     )
 
@@ -174,21 +174,21 @@ device 1: AMD Radeon RX 9070 XT
 
     for size in [1024, 2048, 4096, 8192]:
 
-    print(f"\n=== Linear Test: {size} x {size} ===")
+        print(f"\n=== Linear Test: {size} x {size} ===")
+        
+        layer = torch.nn.Linear(size, size, dtype=dtype).to(device)
+        
+        x = torch.randn(size, size, device=device, dtype=dtype)
     
-    layer = torch.nn.Linear(size, size, dtype=dtype).to(device)
+        torch.cuda.synchronize()
+        
+        start = time.time()
+        
+        y = layer(x)
+        
+        torch.cuda.synchronize()
     
-    x = torch.randn(size, size, device=device, dtype=dtype)
-
-    torch.cuda.synchronize()
-    
-    start = time.time()
-    
-    y = layer(x)
-    
-    torch.cuda.synchronize()
-
-    print("Forward time:", time.time() - start)
+        print("Forward time:", time.time() - start)
 
 🔮 Future Work
 
