@@ -1,4 +1,5 @@
 🚀 AMD LLM Windows Guide
+
 Run Qwen / DeepSeek / Llama on AMD Radeon RX 9070 XT (Pure Windows, No Linux Required)
 
 
@@ -11,10 +12,13 @@ Run Qwen / DeepSeek / Llama on AMD Radeon RX 9070 XT (Pure Windows, No Linux Req
 
 
 This guide demonstrates exactly how to run modern LLM models (Qwen, DeepSeek, Llama, TinyLlama)
+
 on an AMD Radeon RX 9070 XT GPU using pure Windows —
 
 ❌ No Linux
+
 ❌ No WWSL
+
 ❌ No dual-boot
 
 Everything here is 100% tested on real hardware and fully reproducible.
@@ -54,12 +58,19 @@ Run HuggingFace LLMs
 Prepare for future RAG troubleshooting assistant
 
 🖥️ Tested Environment
+
 Component	Version
+
 OS	Windows 11 Pro 24H2
+
 GPU	AMD Radeon RX 9070 XT
+
 Driver	ROCm HIP SDK 6.4.2
+
 Python	3.12.10
+
 PyTorch	ROCm nightly build
+
 ⭐ 1. Install ROCm HIP SDK (Windows)
 
 Download from AMD:
