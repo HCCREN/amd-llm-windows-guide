@@ -200,16 +200,3 @@ RAG for troubleshooting logs
 
 Full AMD ROCm stress suite
 
-✔ Commit this version and everything will render perfectly.
-
-If you want:
-
-images
-
-banners
-
-better badges
-
-benchmark table
-
-I can generate them too.
