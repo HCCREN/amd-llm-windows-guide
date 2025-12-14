@@ -18,14 +18,8 @@ Stress tests:
 - Transformer-like matrix multiplies  
 Useful for detecting ROCm stability issues.
 
-### `run_tinyllama.py`
-Small and fast LLM demo (TinyLlama-1.1B).
-
 ### `run_qwen.py`
 Runs Qwen2.5-7B-Instruct on AMD GPU.
-
-### `run_deepseek.py`
-Runs DeepSeek-R1-Distill (Qwen variant).
 
 ---
 
