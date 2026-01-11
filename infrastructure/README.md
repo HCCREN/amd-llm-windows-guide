@@ -22,3 +22,10 @@ Open your terminal (Command Prompt or PowerShell) and run:
 ```bash
 docker pull qdrant/qdrant
 docker run -d -p 6333:6333 -p 6334:6334 --name qdrant_amd_rag qdrant/qdrant
+
+## 3. Verify it works
+Open your web browser and visit:
+
+http://localhost:6333/dashboard
+
+If you see the Qdrant Dashboard, you represent "Infrastructure Ready"! Proceed to 01_setup to configure your Python environment.
