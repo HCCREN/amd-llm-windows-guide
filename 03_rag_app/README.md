@@ -11,6 +11,6 @@ Run the application:
 
 python 03_rag_app/visual_rag_app.py
 
-##Tips
+## Tips
 Memory Management: If you see "Offloading...", don't worry! This is a feature to ensure the app runs smoothly on 16GB VRAM cards like the RX 9070 XT.
 First Run: The first time you ask a question, it might take a few seconds to load the Qwen model. Subsequent questions will be faster if the model is already loaded.
