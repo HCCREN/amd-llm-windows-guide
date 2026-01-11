@@ -1,0 +1,12 @@
+# Core Libraries
+transformers>=4.46.0
+qdrant-client
+pdf2image
+pillow
+accelerate
+numpy
+
+# Model Specific
+colpali-engine>=0.3.0
+qwen-vl-utils
+bitsandbytes
