@@ -28,4 +28,4 @@ Open your web browser and visit:
 
 http://localhost:6333/dashboard
 
-If you see the Qdrant Dashboard, you represent "Infrastructure Ready"! Proceed to 01_setup to configure your Python environment.
+If you see the Qdrant Dashboard, you represent "Infrastructure Ready"!
