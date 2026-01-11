@@ -19,7 +19,7 @@ Simply double-click the `start_qdrant.bat` file in this folder. It will automati
 
 ### Option B: The Manual Way (Command Line)
 Open your terminal (Command Prompt or PowerShell) and run:
-```bash
+
 docker pull qdrant/qdrant
 docker run -d -p 6333:6333 -p 6334:6334 --name qdrant_amd_rag qdrant/qdrant
 
