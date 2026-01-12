@@ -1,188 +1,61 @@
-🚀 AMD LLM Windows Guide
+# 🚀 AMD LLM Windows Guide: Visual RAG Edition (RX 9070 XT / RDNA 3+)
 
-Run Qwen / DeepSeek / Llama on AMD Radeon RX 9070 XT (Pure Windows, No Linux Required)
+> **A complete, step-by-step guide to running advanced Multi-Modal RAG on AMD Radeon GPUs in a pure Windows environment.** > ❌ No Linux required  
+> ❌ No WSL required  
+> ✅ 100% Native Windows Python + ROCm
 
+![AMD Radeon](https://img.shields.io/badge/GPU-AMD_Radeon_RX_9070_XT-red) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![ROCm](https://img.shields.io/badge/ROCm-6.2%2B-orange)
 
+## 🎯 Project Goal
+This project demonstrates how to build a **Visual Retrieval-Augmented Generation (RAG)** system using your local AMD GPU.
+Instead of standard text search, we use **ColPali (Multi-Vector Retrieval)** to "see" documents and **Qwen2-VL** to answer questions based on charts, tables, and layouts.
 
+## 🛠️ Tech Stack
+* **Hardware**: AMD Radeon RX 9070 XT (or any RDNA 3/4 GPU)
+* **OS**: Windows 10/11 (Native)
+* **Database**: Qdrant (via Docker)
+* **Models**: 
+    * Retriever: `vidore/colpali-v1.2` (Visual Embeddings)
+    * Generator: `Qwen/Qwen2-VL-2B-Instruct` (Visual LLM)
 
+---
 
+## 📚 Step-by-Step Guide
 
+Follow these folders in order to build your own app:
 
+### [Step 0: Infrastructure Setup](./infrastructure)
+**Start here!** Set up the Vector Database (Qdrant) using Docker. 
+* *Includes a one-click `.bat` launcher.*
 
+### [Step 1: Python Environment & ROCm](./01_setup)
+Install PyTorch for AMD (ROCm) and verify your GPU is detected correctly.
+* *Solves the "PyTorch not finding GPU" issue on Windows.*
 
+### [Step 2: Indexing Your Data](./02_indexing)
+Learn how to convert your PDF documents into multi-vector visual embeddings.
+* *Uses ColPali to read charts and tables.*
 
-This guide demonstrates exactly how to run modern LLM models (Qwen, DeepSeek, Llama, TinyLlama)
+### [Step 3: Run the Visual RAG App](./03_rag_app)
+**The Final Product!** run a chat application that switches models automatically to fit in 16GB VRAM.
+* *Features automatic Model Offloading (CPU <-> GPU).*
 
-on an AMD Radeon RX 9070 XT GPU using pure Windows —
+---
 
-❌ No Linux
+## ⚡ Quick Start (For Experienced Users)
 
-❌ No WWSL
+1.  **Start Database**: Run `infrastructure/start_qdrant.bat`
+2.  **Install Deps**: 
+    ```bash
+    pip install --pre torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/nightly/rocm6.2](https://download.pytorch.org/whl/nightly/rocm6.2)
+    pip install -r 01_setup/requirements.txt
+    ```
+3.  **Add Data**: Put PDFs in `data/` folder.
+4.  **Index**: `python 02_indexing/ingest_pdf.py`
+5.  **Run**: `python 03_rag_app/visual_rag_app.py`
 
-❌ No dual-boot
+---
 
-Everything here is 100% tested on real hardware and fully reproducible.
-
-📑 Table of Contents
-
-What This Project Covers
-
-Tested Environment
-
-1. Install ROCm HIP SDK
-
-2. Create Python Virtual Environment
-
-3. Install ROCm PyTorch
-
-4. Verify GPU Access
-
-5. Run Your First LLM
-
-6. Stress Test
-
-Future Work
-
-🔧 What This Project Covers
-
-Install ROCm HIP SDK for Windows
-
-Install ROCm-enabled PyTorch
-
-Verify GPU support (hipinfo, torch.cuda)
-
-Stress-test Linear / Transformer layers
-
-Run HuggingFace LLMs
-
-Prepare for future RAG troubleshooting assistant
-
-🖥️ Tested Environment
-
-Component	Version
-
-OS	Windows 11 Pro 24H2
-
-GPU	AMD Radeon RX 9070 XT
-
-Driver	ROCm HIP SDK 6.4.2
-
-Python	3.12.10
-
-PyTorch	ROCm nightly build
-
-⭐ 1. Install ROCm HIP SDK (Windows)
-
-Download from AMD:
-
-https://www.amd.com/en/developer/resources/rocm-hub/hip-sdk.html
-
-Choose:
-
-Windows 10 & 11
-
-ROCm 6.4.2 HIP SDK
-
-Verify installation:
-
-hipinfo
-
-
-Expected:
-
-device 0: AMD Radeon(TM) Graphics
-
-device 1: AMD Radeon RX 9070 XT
-
-⭐ 2. Create Python Virtual Environment
-
-    python -m venv venv
-
-    venv\Scripts\activate
-
-⭐ 3. Install ROCm PyTorch
-
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
-
-⭐ 4. Verify GPU Access
-
-    import torch
-
-    print("CUDA available:", torch.cuda.is_available())
-
-    print("Device count:", torch.cuda.device_count())
-
-    for i in range(torch.cuda.device_count()):
-
-        print(f"Device {i}:", torch.cuda.get_device_name(i))
-
-⭐ 5. Run Your First LLM on AMD GPU
-
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    import torch
-    
-    MODEL_ID = "Qwen/Qwen2.5-7B-Instruct"
-    device = torch.device("cuda:1" if torch.cuda.device_count() > 1 else "cuda:0")
-    dtype = torch.bfloat16  # Qwen supports bf16
-    
-    print("Using device:", device)
-    
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        torch_dtype=dtype,
-        device_map={"": device},
-        trust_remote_code=True
-    )
-    
-    prompt = "Give three practical GPU tuning tips for ROCm on Windows."
-    inputs = tokenizer(prompt, return_tensors="pt").to(device)
-    
-    with torch.no_grad():
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=200,
-            temperature=0.7
-        )
-    
-    print("\n=== Qwen Response ===\n")
-    print(tokenizer.decode(outputs[0], skip_special_tokens=True))
-
-⭐ 6. Stress Test (Transformer / Linear on AMD GPU)
-
-    import torch
-
-    import time
-
-    device = torch.device("cuda:1")
-
-    dtype = torch.float16
-
-    for size in [1024, 2048, 4096, 8192]:
-
-        print(f"\n=== Linear Test: {size} x {size} ===")
-        
-        layer = torch.nn.Linear(size, size, dtype=dtype).to(device)
-        
-        x = torch.randn(size, size, device=device, dtype=dtype)
-    
-        torch.cuda.synchronize()
-        
-        start = time.time()
-        
-        y = layer(x)
-        
-        torch.cuda.synchronize()
-    
-        print("Forward time:", time.time() - start)
-
-🔮 Future Work
-
-Qwen2.5-7B Instruct full guide
-
-DeepSeek local inference
-
-RAG for troubleshooting logs
-
-Full AMD ROCm stress suite
-
+## 🤝 Contribution
+If you find this guide helpful, please give it a ⭐ **Star**!
+Issues and Pull Requests are welcome to help more AMD users on Windows.
